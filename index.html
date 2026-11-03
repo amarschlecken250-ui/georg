@@ -1,210 +1,779 @@
-<!doctype html>
-<html lang="de">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Die Welt von Georg</title>
+<title>Georg OS</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #fbf7f0; --card: #ffffff; --text: #2a2420; --muted: #75695f;
-    --accent: #d9622b; --accent-soft: #f6dccd; --line: #eadfd3;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #1b1714; --card: #26201c; --text: #f3ebe2; --muted: #b3a597;
-      --accent: #f08a52; --accent-soft: #3d2a1f; --line: #3a302a;
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg: #1b1714; --card: #26201c; --text: #f3ebe2; --muted: #b3a597;
-    --accent: #f08a52; --accent-soft: #3d2a1f; --line: #3a302a;
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 Inter, system-ui, sans-serif; }
-  header { text-align: center; padding: 56px 16px 24px; }
-  .avatar { width: 112px; height: 112px; border-radius: 50%; margin: 0 auto 16px; display: grid; place-items: center;
-    font: 800 52px Fraunces, serif; color: #fff; background: linear-gradient(135deg, var(--accent), #e9a23b); }
-  h1, h2 { font-family: Fraunces, serif; margin: 0 0 8px; }
-  h1 { font-size: clamp(2.2rem, 7vw, 3.6rem); }
-  header p { color: var(--muted); margin: 0; }
-  nav { position: sticky; top: 0; z-index: 1; background: var(--bg); border-bottom: 1px solid var(--line); }
-  [role="tablist"] { display: flex; gap: 4px; max-width: 960px; margin: 0 auto; padding: 8px 16px; overflow-x: auto; }
-  [role="tab"] { flex: none; border: 0; background: none; color: var(--muted); font: 600 15px Inter, sans-serif;
-    padding: 10px 14px; border-radius: 999px; cursor: pointer; }
-  [role="tab"]:hover { color: var(--text); }
-  [role="tab"][aria-selected="true"] { background: var(--accent-soft); color: var(--accent); }
-  [role="tab"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  main { max-width: 960px; margin: 0 auto; padding: 32px 16px 64px; }
-  [role="tabpanel"] { animation: fade .25s ease; }
-  @keyframes fade { from { opacity: 0; transform: translateY(6px); } }
-  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: 20px; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
-  .card .emoji { font-size: 2rem; }
-  .card h3 { margin: 8px 0 4px; }
-  .card p { margin: 0; color: var(--muted); }
-  .tile { aspect-ratio: 1; border-radius: 16px; display: grid; place-items: center; font-size: 3rem; }
-  blockquote { margin: 0; font: 600 1.25rem/1.4 Fraunces, serif; }
-  blockquote + p { margin: 8px 0 0; color: var(--muted); }
-  .timeline { list-style: none; padding: 0; margin: 20px 0 0; border-left: 3px solid var(--accent-soft); }
-  .timeline li { position: relative; padding: 0 0 24px 24px; }
-  .timeline li::before { content: ""; position: absolute; left: -9px; top: 6px; width: 15px; height: 15px; border-radius: 50%; background: var(--accent); }
-  .timeline b { color: var(--accent); }
-  form { display: grid; gap: 12px; max-width: 480px; margin-top: 20px; }
-  input, textarea { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); color: var(--text); font: inherit; }
-  button.primary { background: var(--accent); color: #fff; border: 0; border-radius: 12px; padding: 12px; font: 600 16px Inter, sans-serif; cursor: pointer; }
-  .theme { position: absolute; top: 16px; right: 16px; background: var(--card); border: 1px solid var(--line); color: var(--text);
-    border-radius: 999px; width: 40px; height: 40px; cursor: pointer; font-size: 18px; }
-  .lead { font-size: 1.125rem; max-width: 640px; }
-  footer { text-align: center; color: var(--muted); padding: 24px 16px; border-top: 1px solid var(--line); }
-</style>
-</head>
-<body>
-<button class="theme" id="theme" aria-label="Hell/Dunkel umschalten">🌓</button>
+/* Layout: HUD-Konsole. Feste Kopfleiste mit Modul-Tabs, darunter je ein Modul auf einem lebenden Sternenfeld. Bewusst nur dunkel. */
+:root {
+  --void: #060a13;
+  --panel: rgba(12, 19, 35, .74);
+  --panel-solid: #0c1323;
+  --line: #1c2a46;
+  --line-hi: #2d4573;
+  --fg: #dce7f7;
+  --muted: #8395b8;
+  --ice: #7fe7ff;
+  --ice-dim: rgba(127, 231, 255, .13);
+  --amber: #ffb547;
+  --good: #6ff0a8;
+  --bad: #ff7085;
+  --display: "Chakra Petch", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  --cut: 14px;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { background: var(--void); }
+body {
+  color: var(--fg); font: 16px/1.6 var(--body);
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(127,231,255,.09), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(255,181,71,.06), transparent 60%),
+    var(--void);
+  min-height: 100%;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--void); }
+#bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+::selection { background: var(--ice); color: var(--void); }
+:focus-visible { outline: 2px solid var(--ice); outline-offset: 2px; }
+button { font: inherit; color: inherit; }
 
-<header>
-  <div class="avatar" aria-hidden="true">G</div>
-  <h1>Die Welt von Georg</h1>
-  <p>Legende. Freund. Einfach Georg.</p>
+/* Kopfleiste */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: rgba(6,10,19,.84); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+.bar { display: flex; align-items: center; gap: 12px 20px; padding-block: 10px; flex-wrap: wrap; }
+.brand { font: 700 18px var(--display); letter-spacing: .14em; white-space: nowrap; display: flex; align-items: center; gap: 10px; background: none; border: 0; cursor: pointer; padding: 0; }
+.brand i { width: 10px; height: 10px; background: var(--good); box-shadow: 0 0 10px var(--good); border-radius: 50%; animation: pulse 2s infinite; }
+.brand span { color: var(--ice); }
+[role="tablist"] { display: flex; gap: 2px; overflow-x: auto; flex: 1; min-width: 0; scrollbar-width: none; }
+[role="tablist"]::-webkit-scrollbar { display: none; }
+[role="tab"] { flex: none; background: none; border: 0; color: var(--muted); font: 500 12.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; padding: 10px 9px; cursor: pointer; position: relative; transition: color .2s; }
+[role="tab"] b { color: var(--line-hi); font-weight: 500; margin-right: 5px; }
+[role="tab"]:hover { color: var(--fg); }
+[role="tab"][aria-selected="true"] { color: var(--ice); }
+[role="tab"][aria-selected="true"] b { color: var(--amber); }
+[role="tab"][aria-selected="true"]::after { content: ""; position: absolute; left: 10px; right: 10px; bottom: 2px; height: 2px; background: var(--ice); box-shadow: 0 0 12px var(--ice); }
+.cmd-btn { background: var(--ice-dim); border: 1px solid var(--line-hi); color: var(--ice); font: 500 12px var(--mono); padding: 7px 10px; cursor: pointer; white-space: nowrap; }
+.cmd-btn:hover { border-color: var(--ice); }
+@media (max-width: 820px) {
+  .brand { order: 1; } .cmd-btn { order: 2; margin-left: auto; }
+  [role="tablist"] { order: 3; flex-basis: 100%; margin-inline: -8px; }
+}
+
+/* Grundbausteine */
+main { position: relative; z-index: 1; padding-block: 36px 72px; }
+[role="tabpanel"] { display: grid; gap: 24px; animation: rise .45s cubic-bezier(.2,.8,.2,1); }
+@keyframes rise { from { opacity: .35; transform: translateY(10px); } }
+@keyframes pulse { 50% { opacity: .35; } }
+.hud { position: relative; background: var(--panel); border: 1px solid var(--line); padding: 22px; min-width: 0;
+  clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, var(--cut) 100%, 0 calc(100% - var(--cut)));
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.eyebrow { font: 500 12px var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--ice); margin: 0 0 8px; }
+h2 { font: 700 clamp(1.9rem, 4.4vw, 2.8rem)/1.05 var(--display); margin: 0; text-wrap: balance; letter-spacing: .01em; }
+h3 { font: 700 1.2rem/1.2 var(--display); margin: 0 0 6px; letter-spacing: .02em; }
+.lead { color: var(--muted); max-width: 62ch; margin: 10px 0 0; font-size: 1.05rem; }
+.muted { color: var(--muted); }
+.mono { font-family: var(--mono); }
+.grid { display: grid; gap: 16px; }
+.auto { grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); }
+.split { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+@media (max-width: 760px) { .split { grid-template-columns: minmax(0, 1fr); } }
+.btn { background: transparent; border: 1px solid var(--line-hi); color: var(--fg); font: 500 13px var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: 10px 14px; cursor: pointer; transition: border-color .2s, background .2s, color .2s; }
+.btn:hover { border-color: var(--ice); color: var(--ice); }
+.btn.primary { background: var(--ice); color: var(--void); border-color: var(--ice); font-weight: 600; }
+.btn.primary:hover { background: #b5f2ff; color: var(--void); }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.chip { font: 500 11px var(--mono); letter-spacing: .12em; text-transform: uppercase; border: 1px solid var(--line-hi); padding: 4px 8px; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; }
+.chip.on { color: var(--good); border-color: rgba(111,240,168,.4); }
+.chip.on::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--good); box-shadow: 0 0 8px var(--good); }
+.meter { height: 6px; background: var(--line); position: relative; overflow: hidden; }
+.meter > i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, var(--ice), #c8f6ff); box-shadow: 0 0 12px var(--ice); transition: width .6s cubic-bezier(.2,.8,.2,1); }
+.meter.warm > i { background: linear-gradient(90deg, var(--amber), #ffd590); box-shadow: 0 0 12px var(--amber); }
+
+/* Start */
+.hero { display: grid; gap: 18px; padding-block: 12px 4px; }
+.hero-title { font: 700 clamp(4.5rem, 19vw, 11rem)/.86 var(--display); letter-spacing: .05em; margin: 0; cursor: default;
+  background: linear-gradient(180deg, #ffffff 10%, var(--ice) 70%, #2b6c8a); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 28px rgba(127,231,255,.25)); }
+.hero-sub { font: 500 clamp(1rem, 2.4vw, 1.25rem) var(--mono); color: var(--fg); margin: 0; }
+.hero-sub span { color: var(--amber); }
+.stat .k { font: 500 11px var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.stat .v { font: 700 2.4rem/1.1 var(--display); font-variant-numeric: tabular-nums; margin: 6px 0 10px; }
+.stat .v small { font-size: .9rem; color: var(--muted); font-weight: 500; margin-left: 4px; }
+.jump { text-align: left; cursor: pointer; display: grid; align-content: start; gap: 6px; transition: border-color .2s, transform .2s; }
+.jump:hover { border-color: var(--ice); transform: translateY(-2px); }
+.jump .k { font: 500 11px var(--mono); color: var(--amber); letter-spacing: .14em; }
+.jump p { margin: 0; color: var(--muted); font-size: .95rem; }
+
+/* Profil */
+.holo { display: grid; place-items: center; min-height: 300px; }
+.orb { position: relative; width: min(240px, 70vw); aspect-ratio: 1; max-width: 100%; display: grid; place-items: center; }
+.orb::before, .orb::after, .orb i { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 1px dashed var(--line-hi); animation: spin 24s linear infinite; }
+.orb::after { inset: 14%; border: 1px solid rgba(127,231,255,.35); border-top-color: transparent; border-bottom-color: transparent; animation-duration: 9s; animation-direction: reverse; }
+.orb i { inset: 28%; border: 2px solid var(--ice); box-shadow: 0 0 40px rgba(127,231,255,.35), inset 0 0 30px rgba(127,231,255,.2); animation: none; background: radial-gradient(circle at 40% 35%, rgba(127,231,255,.25), transparent 70%); }
+.orb b { position: relative; font: 700 clamp(3rem, 11vw, 4.6rem) var(--display); color: var(--ice); text-shadow: 0 0 24px var(--ice); }
+@keyframes spin { to { transform: rotate(360deg); } }
+dl.sheet { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 0; margin: 0; }
+dl.sheet dt, dl.sheet dd { padding: 11px 0; border-bottom: 1px solid var(--line); margin: 0; }
+dl.sheet dt { font: 500 11.5px/1.9 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); padding-right: 20px; }
+dl.sheet dd { font-weight: 500; }
+
+/* Skills */
+.radar svg { width: 100%; height: auto; display: block; max-width: 520px; margin: 0 auto; }
+.radar .ring { fill: none; stroke: var(--line); }
+.radar .axis { stroke: var(--line); }
+.radar .area { fill: rgba(127,231,255,.16); stroke: var(--ice); stroke-width: 2; filter: drop-shadow(0 0 8px rgba(127,231,255,.5)); }
+.radar .dot { fill: var(--void); stroke: var(--ice); stroke-width: 2; transition: r .2s; }
+.radar .dot.on { fill: var(--amber); stroke: var(--amber); }
+.radar text { fill: var(--muted); font: 500 12px var(--mono); }
+.radar text.on { fill: var(--amber); }
+.skill { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; text-align: left; background: none; border: 0; border-bottom: 1px solid var(--line); padding: 12px 0; cursor: pointer; width: 100%; }
+.skill .meter { grid-column: 1 / -1; }
+.skill .n { font-weight: 600; }
+.skill .p { font: 500 13px var(--mono); color: var(--ice); font-variant-numeric: tabular-nums; }
+.skill[aria-pressed="true"] .n, .skill[aria-pressed="true"] .p { color: var(--amber); }
+.skill[aria-pressed="true"] .meter > i { background: linear-gradient(90deg, var(--amber), #ffd590); box-shadow: 0 0 12px var(--amber); }
+.skill-note { min-height: 3.2em; margin: 14px 0 0; color: var(--fg); }
+
+/* Galerie */
+.gallery { grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); }
+.tile { position: relative; aspect-ratio: 4 / 5; max-width: 100%; border: 1px solid var(--line); cursor: pointer; overflow: hidden; padding: 0; text-align: left; background: var(--panel-solid); transition: transform .3s, border-color .3s; }
+.tile:hover { transform: translateY(-3px); border-color: var(--ice); }
+.tile .art, .tile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .6s; }
+.tile:hover .art, .tile:hover img { transform: scale(1.06); }
+.tile .cap { position: absolute; inset: auto 0 0; padding: 40px 12px 12px; background: linear-gradient(transparent, rgba(6,10,19,.92)); }
+.tile .cap b { display: block; font: 700 1.05rem var(--display); }
+.tile .cap span { font: 500 11px var(--mono); color: var(--ice); letter-spacing: .08em; }
+.upload { border: 1px dashed var(--line-hi); display: grid; place-items: center; text-align: center; color: var(--muted); aspect-ratio: 4 / 5; max-width: 100%; cursor: pointer; padding: 16px; transition: border-color .2s, color .2s; }
+.upload:hover, .upload:focus-within { border-color: var(--ice); color: var(--ice); }
+.upload input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.upload b { font: 700 2rem var(--display); display: block; }
+
+/* Dialoge */
+dialog { background: var(--panel-solid); color: var(--fg); border: 1px solid var(--line-hi); padding: 0; max-width: min(92vw, 760px); width: 100%; }
+dialog::backdrop { background: rgba(3,6,12,.78); backdrop-filter: blur(4px); }
+.lb-stage { position: relative; aspect-ratio: 4 / 3; max-width: 100%; background: var(--void); }
+.lb-stage .art, .lb-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.lb-bar { display: flex; gap: 12px; align-items: center; justify-content: space-between; padding: 14px 16px; flex-wrap: wrap; }
+
+/* Zitate */
+.quote { display: grid; gap: 22px; padding: clamp(24px, 5vw, 48px); }
+.quote blockquote { margin: 0; font: 700 clamp(1.6rem, 4.6vw, 3rem)/1.15 var(--display); text-wrap: balance; }
+.quote blockquote::before { content: "“"; color: var(--ice); }
+.quote blockquote::after { content: "”"; color: var(--ice); }
+.quote .who { font: 500 13px var(--mono); color: var(--amber); letter-spacing: .08em; }
+.count { font: 500 13px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* Zeitstrahl */
+.tl-scroll { overflow-x: auto; padding-bottom: 6px; }
+.tl { display: grid; grid-template-columns: repeat(6, minmax(130px, 1fr)); position: relative; min-width: 780px; padding-top: 6px; }
+.tl::before { content: ""; position: absolute; left: 0; right: 0; top: 23px; height: 2px; background: linear-gradient(90deg, var(--line-hi), var(--ice), var(--amber)); }
+.node { background: none; border: 0; text-align: left; cursor: pointer; display: grid; gap: 8px; padding: 0 12px 0 0; position: relative; }
+.node i { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--ice); background: var(--void); margin-top: 8px; transition: transform .2s, background .2s; }
+.node[aria-pressed="true"] i { background: var(--amber); border-color: var(--amber); box-shadow: 0 0 16px var(--amber); transform: scale(1.25); }
+.node span { font: 500 11px var(--mono); color: var(--muted); letter-spacing: .14em; text-transform: uppercase; }
+.node b { font: 700 1.05rem var(--display); }
+.node[aria-pressed="true"] b { color: var(--amber); }
+.tl-detail { display: grid; gap: 8px; }
+
+/* Quiz */
+.quiz { display: grid; gap: 18px; max-width: 720px; }
+.opts { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+.opt { text-align: left; background: rgba(6,10,19,.6); border: 1px solid var(--line-hi); padding: 14px 16px; cursor: pointer; font-weight: 500; transition: border-color .2s, background .2s; }
+.opt:hover:not(:disabled) { border-color: var(--ice); }
+.opt:disabled { cursor: default; }
+.opt.right { border-color: var(--good); background: rgba(111,240,168,.1); color: var(--good); }
+.opt.wrong { border-color: var(--bad); background: rgba(255,112,133,.1); color: var(--bad); }
+.big { font: 700 clamp(3rem, 10vw, 5rem)/1 var(--display); color: var(--ice); font-variant-numeric: tabular-nums; }
+
+/* Terminal */
+.term { font: 14px/1.7 var(--mono); padding: 0; }
+.term-head { display: flex; gap: 8px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+.term-head i { width: 10px; height: 10px; border-radius: 50%; background: var(--line-hi); }
+.term-out { height: 340px; overflow-y: auto; padding: 16px; white-space: pre-wrap; word-break: break-word; }
+.term-out .c { color: var(--ice); }
+.term-out .a { color: var(--amber); }
+.term-out .e { color: var(--bad); }
+.term-line { display: flex; gap: 10px; padding: 12px 16px; border-top: 1px solid var(--line); align-items: center; }
+.term-line label { color: var(--good); white-space: nowrap; }
+.term-line input { flex: 1; min-width: 0; background: none; border: 0; color: var(--fg); font: inherit; outline: none; caret-color: var(--ice); }
+.term-tips { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* Kontakt */
+form { display: grid; gap: 14px; }
+.field { display: grid; gap: 6px; }
+.field label { font: 500 11.5px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+input, textarea, select { width: 100%; background: rgba(6,10,19,.7); border: 1px solid var(--line-hi); color: var(--fg); font: inherit; padding: 12px 14px; border-radius: 0; }
+input:focus, textarea:focus, select:focus { border-color: var(--ice); outline: none; box-shadow: 0 0 0 3px var(--ice-dim); }
+.preview { font: 13px/1.6 var(--mono); white-space: pre-wrap; color: var(--fg); background: rgba(6,10,19,.6); border: 1px solid var(--line); padding: 14px; min-height: 160px; margin: 0; word-break: break-word; }
+
+/* Befehlspalette */
+#pal { max-width: min(92vw, 560px); margin-top: 12vh; }
+#pal input { border: 0; border-bottom: 1px solid var(--line); padding: 16px 18px; font-size: 1.05rem; }
+#pal input:focus { box-shadow: none; }
+#pal ul { list-style: none; margin: 0; padding: 8px; max-height: 50vh; overflow-y: auto; }
+#pal li button { width: 100%; text-align: left; background: none; border: 0; padding: 10px 12px; cursor: pointer; display: flex; justify-content: space-between; gap: 12px; }
+#pal li button span { font: 500 11px var(--mono); color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+#pal li button.act { background: var(--ice-dim); color: var(--ice); }
+.pal-foot { font: 500 11px var(--mono); color: var(--muted); padding: 10px 18px; border-top: 1px solid var(--line); }
+
+#toast { position: fixed; z-index: 20; left: 50%; transform: translateX(-50%); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); background: var(--panel-solid); border: 1px solid var(--ice); color: var(--ice); font: 500 13px var(--mono); padding: 12px 16px; max-width: calc(100vw - 32px); box-shadow: 0 0 30px rgba(127,231,255,.2); }
+footer { position: relative; z-index: 1; border-top: 1px solid var(--line); color: var(--muted); font: 12px/1.6 var(--mono); }
+footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-block: 20px; }
+kbd { font: 500 11px var(--mono); border: 1px solid var(--line-hi); padding: 1px 5px; color: var(--fg); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+
+<canvas id="bg" aria-hidden="true"></canvas>
+
+<header class="top">
+  <div class="wrap bar">
+    <button class="brand" data-go="start" aria-label="Zur Startseite"><i></i>GEORG<span>//</span>OS</button>
+    <div role="tablist" aria-label="Module">
+      <button role="tab" id="t-start" aria-controls="start"><b>1</b>Start</button>
+      <button role="tab" id="t-profil" aria-controls="profil"><b>2</b>Profil</button>
+      <button role="tab" id="t-skills" aria-controls="skills"><b>3</b>Skills</button>
+      <button role="tab" id="t-galerie" aria-controls="galerie"><b>4</b>Galerie</button>
+      <button role="tab" id="t-zitate" aria-controls="zitate"><b>5</b>Zitate</button>
+      <button role="tab" id="t-timeline" aria-controls="timeline"><b>6</b>Zeitstrahl</button>
+      <button role="tab" id="t-quiz" aria-controls="quiz"><b>7</b>Quiz</button>
+      <button role="tab" id="t-terminal" aria-controls="terminal"><b>8</b>Terminal</button>
+      <button role="tab" id="t-kontakt" aria-controls="kontakt"><b>9</b>Kontakt</button>
+    </div>
+    <button class="cmd-btn" id="pal-open" aria-label="Befehlspalette öffnen">⌘K Suche</button>
+  </div>
 </header>
 
-<nav>
-  <div role="tablist" aria-label="Bereiche">
-    <button role="tab" id="t-start" aria-controls="start">🏠 Start</button>
-    <button role="tab" id="t-ueber" aria-controls="ueber">🙋 Über Georg</button>
-    <button role="tab" id="t-hobbys" aria-controls="hobbys">🎯 Hobbys</button>
-    <button role="tab" id="t-galerie" aria-controls="galerie">🖼️ Galerie</button>
-    <button role="tab" id="t-zitate" aria-controls="zitate">💬 Zitate</button>
-    <button role="tab" id="t-zeit" aria-controls="zeit">📅 Zeitstrahl</button>
-    <button role="tab" id="t-fakten" aria-controls="fakten">🤓 Fun Facts</button>
-    <button role="tab" id="t-kontakt" aria-controls="kontakt">✉️ Kontakt</button>
-  </div>
-</nav>
+<main class="wrap">
 
-<main>
+  <!-- START -->
   <section role="tabpanel" id="start" aria-labelledby="t-start">
-    <h2>Willkommen!</h2>
-    <p class="lead">Schön, dass du da bist. Diese Seite ist ganz Georg gewidmet – stöbere durch die Tabs und lerne ihn kennen.</p>
-    <div class="grid">
-      <div class="card"><div class="emoji">☕</div><h3>Kaffee-Level</h3><p>Immer bei 100 %.</p></div>
-      <div class="card"><div class="emoji">😄</div><h3>Gute Laune</h3><p>Ansteckend, garantiert.</p></div>
-      <div class="card"><div class="emoji">🚀</div><h3>Motto</h3><p>Geht nicht gibt's nicht.</p></div>
+    <div class="hero">
+      <div class="row">
+        <span class="chip on">System online</span>
+        <span class="chip">Georg-Zeit <span id="clock" class="mono">--:--:--</span></span>
+        <span class="chip">Besuch Nr. <span id="visits">1</span></span>
+      </div>
+      <h1 class="hero-title" id="title" data-text="GEORG">GEORG</h1>
+      <p class="hero-sub">&gt; Legende. Freund. <span>Einfach Georg.</span></p>
+      <p class="lead">Willkommen in Georgs persönlichem Betriebssystem. Wechsle oben die Module, drück die Zahlen <kbd>1</kbd>–<kbd>9</kbd> oder öffne die Suche mit <kbd>Strg</kbd>&nbsp;<kbd>K</kbd>.</p>
+    </div>
+
+    <div class="grid auto">
+      <div class="hud stat">
+        <div class="k">Kaffeepegel</div>
+        <div class="v"><span id="coffee-v">72</span><small>%</small></div>
+        <div class="meter warm"><i id="coffee-m" style="width:72%"></i></div>
+        <div class="row" style="margin-top:14px;justify-content:space-between">
+          <span class="muted mono" style="font-size:12px">Heute: <span id="cups">0</span> Tassen</span>
+          <button class="btn" id="refill">Nachfüllen</button>
+        </div>
+      </div>
+      <div class="hud stat">
+        <div class="k">Laune</div>
+        <div class="v"><span id="mood-v">98</span><small>%</small></div>
+        <div class="meter"><i id="mood-m" style="width:98%"></i></div>
+        <div class="row" style="margin-top:14px;justify-content:space-between">
+          <span class="muted mono" style="font-size:12px" id="mood-t">Bestens</span>
+          <button class="btn" id="highfive">High Five</button>
+        </div>
+      </div>
+      <div class="hud stat">
+        <div class="k">Georg-Level</div>
+        <div class="v">42<small>LVL</small></div>
+        <div class="meter"><i style="width:64%"></i></div>
+        <div class="row" style="margin-top:14px"><span class="muted mono" style="font-size:12px">64 % bis Level 43</span></div>
+      </div>
+    </div>
+
+    <div>
+      <p class="eyebrow">Module</p>
+      <div class="grid auto" id="jumps"></div>
     </div>
   </section>
 
-  <section role="tabpanel" id="ueber" aria-labelledby="t-ueber" hidden>
-    <h2>Über Georg</h2>
-    <p class="lead">Georg ist jemand, den man einfach mögen muss: hilfsbereit, neugierig und immer für einen Spaß zu haben. Hier kannst du seine Geschichte erzählen – wo er herkommt, was ihn ausmacht und warum alle ihn kennen.</p>
-  </section>
-
-  <section role="tabpanel" id="hobbys" aria-labelledby="t-hobbys" hidden>
-    <h2>Hobbys</h2>
-    <div class="grid">
-      <div class="card"><div class="emoji">⚽</div><h3>Fußball</h3><p>Am Wochenende auf dem Platz.</p></div>
-      <div class="card"><div class="emoji">🍳</div><h3>Kochen</h3><p>Seine Spezialität: Kaiserschmarrn.</p></div>
-      <div class="card"><div class="emoji">🎮</div><h3>Zocken</h3><p>Nur noch eine Runde …</p></div>
-      <div class="card"><div class="emoji">🥾</div><h3>Wandern</h3><p>Hauptsache, oben gibt's eine Hütte.</p></div>
+  <!-- PROFIL -->
+  <section role="tabpanel" id="profil" aria-labelledby="t-profil" hidden>
+    <div><p class="eyebrow">Modul 2 · Profil</p><h2>Wer ist Georg?</h2>
+      <p class="lead">Hilfsbereit, neugierig und immer für einen Spaß zu haben. Hier steht alles Wichtige auf einen Blick.</p></div>
+    <div class="grid split">
+      <div class="hud holo"><div class="orb" aria-hidden="true"><i></i><b>G</b></div></div>
+      <div class="hud">
+        <dl class="sheet">
+          <dt>Name</dt><dd>Georg</dd>
+          <dt>Codename</dt><dd>Schorsch</dd>
+          <dt>Rang</dt><dd>Legende, Stufe 42</dd>
+          <dt>Superkraft</dt><dd>Macht aus jedem Montag einen guten Tag</dd>
+          <dt>Schwäche</dt><dd>Pünktlichkeit (siehe Skills)</dd>
+          <dt>Treibstoff</dt><dd>Kaffee, schwarz, 4 Tassen am Tag</dd>
+          <dt>Spezialität</dt><dd>Kaiserschmarrn</dd>
+          <dt>Motto</dt><dd>„Das kriegen wir schon hin.“</dd>
+        </dl>
+      </div>
     </div>
   </section>
 
+  <!-- SKILLS -->
+  <section role="tabpanel" id="skills" aria-labelledby="t-skills" hidden>
+    <div><p class="eyebrow">Modul 3 · Skills</p><h2>Fähigkeiten-Scan</h2>
+      <p class="lead">Wähl eine Fähigkeit aus, um sie im Diagramm zu markieren.</p></div>
+    <div class="grid split">
+      <div class="hud radar" id="radar"></div>
+      <div class="hud">
+        <div id="skill-list"></div>
+        <p class="skill-note" id="skill-note" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALERIE -->
   <section role="tabpanel" id="galerie" aria-labelledby="t-galerie" hidden>
-    <h2>Galerie</h2>
-    <p>Ersetze die Platzhalter durch Fotos von Georg (<code>&lt;img src="foto.jpg" alt="…"&gt;</code>).</p>
-    <div class="grid">
-      <div class="tile" style="background:#f6dccd">🏔️</div>
-      <div class="tile" style="background:#d8e8d4">🌳</div>
-      <div class="tile" style="background:#d4e2f0">🌊</div>
-      <div class="tile" style="background:#efe1f5">🎉</div>
-      <div class="tile" style="background:#f8edc9">🍕</div>
-      <div class="tile" style="background:#e3e3e3">📸</div>
-    </div>
+    <div><p class="eyebrow">Modul 4 · Galerie</p><h2>Momente-Archiv</h2>
+      <p class="lead">Klick auf ein Bild, um es groß zu sehen. Mit dem Plus-Feld fügst du eigene Fotos von Georg hinzu. Sie bleiben nur in deinem Browser, bis du die Seite neu lädst.</p></div>
+    <div class="grid gallery" id="gallery"></div>
   </section>
 
+  <!-- ZITATE -->
   <section role="tabpanel" id="zitate" aria-labelledby="t-zitate" hidden>
-    <h2>Zitate</h2>
-    <div class="grid">
-      <div class="card"><blockquote>„Erst der Kaffee, dann die Welt.“</blockquote><p>– Georg, jeden Morgen</p></div>
-      <div class="card"><blockquote>„Das kriegen wir schon hin.“</blockquote><p>– Georg, immer</p></div>
-      <div class="card"><blockquote>„Ich war's nicht.“</blockquote><p>– Georg, verdächtig oft</p></div>
+    <div><p class="eyebrow">Modul 5 · Zitate</p><h2>Georg hat gesprochen</h2></div>
+    <div class="hud quote">
+      <blockquote id="q-text" aria-live="polite"></blockquote>
+      <div class="row" style="justify-content:space-between">
+        <span class="who" id="q-who"></span>
+        <span class="count" id="q-count"></span>
+      </div>
+      <div class="row">
+        <button class="btn" id="q-prev" aria-label="Vorheriges Zitat">‹ Zurück</button>
+        <button class="btn" id="q-next" aria-label="Nächstes Zitat">Weiter ›</button>
+        <button class="btn" id="q-rand">Zufall</button>
+        <button class="btn primary" id="q-copy">Kopieren</button>
+      </div>
     </div>
   </section>
 
-  <section role="tabpanel" id="zeit" aria-labelledby="t-zeit" hidden>
-    <h2>Zeitstrahl</h2>
-    <ul class="timeline">
-      <li><b>Der Anfang</b><br>Georg erblickt das Licht der Welt.</li>
-      <li><b>Schulzeit</b><br>Klassenclown mit Herz.</li>
-      <li><b>Großes Abenteuer</b><br>Die erste Reise, von der er heute noch erzählt.</li>
-      <li><b>Heute</b><br>Georg, wie wir ihn kennen und lieben.</li>
-    </ul>
-  </section>
-
-  <section role="tabpanel" id="fakten" aria-labelledby="t-fakten" hidden>
-    <h2>Fun Facts</h2>
-    <div class="card" style="margin-top:20px">
-      <p id="fact" style="font-size:1.25rem;color:var(--text)"></p>
-      <button class="primary" id="next-fact" style="margin-top:16px">Noch ein Fakt 🎲</button>
+  <!-- ZEITSTRAHL -->
+  <section role="tabpanel" id="timeline" aria-labelledby="t-timeline" hidden>
+    <div><p class="eyebrow">Modul 6 · Zeitstrahl</p><h2>Georgs Level-Historie</h2>
+      <p class="lead">Klick dich durch die Stationen.</p></div>
+    <div class="hud">
+      <div class="tl-scroll"><div class="tl" id="tl"></div></div>
     </div>
+    <div class="hud tl-detail" id="tl-detail" aria-live="polite"></div>
   </section>
 
+  <!-- QUIZ -->
+  <section role="tabpanel" id="quiz" aria-labelledby="t-quiz" hidden>
+    <div><p class="eyebrow">Modul 7 · Quiz</p><h2>Wie gut kennst du Georg?</h2>
+      <p class="lead">Fünf Fragen. Alle Antworten stehen irgendwo auf dieser Seite.</p></div>
+    <div class="hud quiz" id="quiz-box"></div>
+  </section>
+
+  <!-- TERMINAL -->
+  <section role="tabpanel" id="terminal" aria-labelledby="t-terminal" hidden>
+    <div><p class="eyebrow">Modul 8 · Terminal</p><h2>Direktverbindung</h2>
+      <p class="lead">Tipp einen Befehl ein oder klick auf einen Vorschlag.</p></div>
+    <div class="hud term">
+      <div class="term-head"><i></i><i></i><i></i>georg@os: ~</div>
+      <div class="term-out" id="term-out" aria-live="polite"></div>
+      <form class="term-line" id="term-form">
+        <label for="term-in">georg@os:~$</label>
+        <input id="term-in" autocomplete="off" spellcheck="false" placeholder="help">
+      </form>
+    </div>
+    <div class="term-tips" id="term-tips"></div>
+  </section>
+
+  <!-- KONTAKT -->
   <section role="tabpanel" id="kontakt" aria-labelledby="t-kontakt" hidden>
-    <h2>Kontakt</h2>
-    <p>Sag Georg Hallo! Die Nachricht öffnet dein E-Mail-Programm.</p>
-    <form id="form">
-      <input name="name" placeholder="Dein Name" required aria-label="Dein Name">
-      <textarea name="msg" rows="4" placeholder="Deine Nachricht an Georg" required aria-label="Nachricht"></textarea>
-      <button class="primary">Abschicken</button>
-    </form>
+    <div><p class="eyebrow">Modul 9 · Kontakt</p><h2>Nachricht an Georg</h2>
+      <p class="lead">Schreib deine Nachricht und kopiere sie. Dann kannst du sie Georg per WhatsApp, SMS oder E-Mail schicken.</p></div>
+    <div class="grid split">
+      <form class="hud" id="msg-form">
+        <div class="field"><label for="m-name">Dein Name</label><input id="m-name" required placeholder="z. B. Lena"></div>
+        <div class="field"><label for="m-type">Anlass</label>
+          <select id="m-type">
+            <option>Einfach mal Hallo</option>
+            <option>Einladung</option>
+            <option>Geburtstagsgruß</option>
+            <option>Kaffee-Date</option>
+          </select></div>
+        <div class="field"><label for="m-text">Nachricht</label><textarea id="m-text" rows="5" required placeholder="Hey Georg, …"></textarea></div>
+        <button class="btn primary">Nachricht kopieren</button>
+      </form>
+      <div class="hud">
+        <p class="eyebrow">Vorschau</p>
+        <pre class="preview" id="m-preview"></pre>
+      </div>
+    </div>
   </section>
 </main>
 
-<footer>Mit ❤️ für Georg gemacht</footer>
+<footer><div class="wrap"><span>GEORG//OS · v2.0 · Mit Liebe für Georg gebaut</span><span>Alle Inhalte sind Beispiele und lassen sich anpassen.</span></div></footer>
+
+<dialog id="lb" aria-label="Bildansicht">
+  <div class="lb-stage" id="lb-stage"></div>
+  <div class="lb-bar">
+    <div><b id="lb-t" style="font-family:var(--display)"></b> <span class="muted mono" id="lb-c" style="font-size:12px"></span></div>
+    <div class="row">
+      <button class="btn" id="lb-prev" aria-label="Vorheriges Bild">‹</button>
+      <button class="btn" id="lb-next" aria-label="Nächstes Bild">›</button>
+      <button class="btn" id="lb-close">Schließen</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="pal" aria-label="Befehlspalette">
+  <input id="pal-in" placeholder="Modul oder Aktion suchen …" autocomplete="off" aria-label="Suchen">
+  <ul id="pal-list"></ul>
+  <div class="pal-foot">↑ ↓ wählen · Enter ausführen · Esc schließen</div>
+</dialog>
+
+<div id="toast" role="status" hidden></div>
 
 <script>
-  const tabs = [...document.querySelectorAll('[role="tab"]')];
-  function show(tab) {
-    tabs.forEach(t => {
-      const on = t === tab;
-      t.setAttribute('aria-selected', on);
-      t.tabIndex = on ? 0 : -1;
-      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
-    });
-    history.replaceState(null, '', '#' + tab.getAttribute('aria-controls'));
-  }
-  tabs.forEach((t, i) => {
-    t.onclick = () => show(t);
-    t.onkeydown = e => {
-      const d = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
-      if (d) { const n = tabs[(i + d + tabs.length) % tabs.length]; show(n); n.focus(); }
-    };
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(() => t.hidden = true, 2800); }
+async function copy(text) { try { await navigator.clipboard.writeText(text); return true; } catch { return false; } }
+
+/* ---------- Tabs & Routing ---------- */
+const tabs = $$('[role="tab"]');
+const ids = tabs.map(t => t.getAttribute('aria-controls'));
+const labels = Object.fromEntries(tabs.map(t => [t.getAttribute('aria-controls'), t.textContent.slice(1)]));
+function show(id) {
+  if (!ids.includes(id)) id = 'start';
+  tabs.forEach(t => {
+    const on = t.getAttribute('aria-controls') === id;
+    t.setAttribute('aria-selected', on);
+    t.tabIndex = on ? 0 : -1;
+    $('#' + t.getAttribute('aria-controls')).hidden = !on;
+    if (on) t.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   });
-  show(tabs.find(t => '#' + t.getAttribute('aria-controls') === location.hash) || tabs[0]);
-
-  const facts = [
-    'Georg kann in unter 10 Sekunden ein Butterbrot schmieren.',
-    'Georg hat noch nie einen Geburtstag vergessen.',
-    'Der Name Georg kommt aus dem Griechischen und bedeutet „Bauer“.',
-    'Georg behauptet, er sei ein Morgenmensch. Niemand glaubt ihm.',
-    'Georgs Lieblingszahl ist angeblich 7.'
-  ];
-  let f = 0;
-  const factEl = document.getElementById('fact');
-  factEl.textContent = facts[0];
-  document.getElementById('next-fact').onclick = () => factEl.textContent = facts[f = (f + 1) % facts.length];
-
-  document.getElementById('form').onsubmit = e => {
+  window.scrollTo({ top: 0 });
+  if (id === 'start') scramble($('#title'));
+}
+function go(id) { if (location.hash.slice(1) === id) show(id); else location.hash = id; }
+addEventListener('hashchange', () => show(location.hash.slice(1)));
+tabs.forEach((t, i) => {
+  t.onclick = () => go(ids[i]);
+  t.onkeydown = e => {
+    const n = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+    if (n === undefined) return;
     e.preventDefault();
-    const d = new FormData(e.target);
-    location.href = 'mailto:?subject=' + encodeURIComponent('Hallo Georg, von ' + d.get('name')) + '&body=' + encodeURIComponent(d.get('msg'));
+    const j = (n + tabs.length) % tabs.length;
+    go(ids[j]); tabs[j].focus();
   };
+});
+document.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if (g) go(g.dataset.go); });
+addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openPal(); return; }
+  if (e.target.closest('input, textarea, select, dialog')) return;
+  if (e.key === '/') { e.preventDefault(); openPal(); }
+  else if (/^[1-9]$/.test(e.key) && !e.ctrlKey && !e.metaKey && !e.altKey) go(ids[+e.key - 1]);
+});
 
-  document.getElementById('theme').onclick = () => {
-    const dark = document.documentElement.dataset.theme
-      ? document.documentElement.dataset.theme === 'dark'
-      : matchMedia('(prefers-color-scheme: dark)').matches;
-    document.documentElement.dataset.theme = dark ? 'light' : 'dark';
+/* ---------- Start ---------- */
+function scramble(el) {
+  const final = el.dataset.text;
+  if (reduce) return;
+  clearInterval(el._t);
+  const chars = '#%&/<>01▓▒░', total = 16; let f = 0;
+  el._t = setInterval(() => {
+    el.textContent = [...final].map((c, i) => f / total * final.length > i ? c : chars[Math.random() * chars.length | 0]).join('');
+    if (++f > total) { clearInterval(el._t); el.textContent = final; }
+  }, 40);
+}
+$('#title').addEventListener('mouseenter', e => scramble(e.target));
+const tick = () => $('#clock').textContent = new Date().toLocaleTimeString('de-DE');
+tick(); setInterval(tick, 1000);
+const visits = store.get('georg-visits', 0) + 1; store.set('georg-visits', visits); $('#visits').textContent = visits;
+
+const today = new Date().toDateString();
+let cupsData = store.get('georg-cups', { day: today, n: 0 });
+if (cupsData.day !== today) cupsData = { day: today, n: 0 };
+let coffee = 72, mood = 98;
+function drawStats() {
+  $('#coffee-v').textContent = coffee; $('#coffee-m').style.width = coffee + '%';
+  $('#mood-v').textContent = mood; $('#mood-m').style.width = mood + '%';
+  $('#mood-t').textContent = mood >= 95 ? 'Bestens' : mood >= 70 ? 'Gut drauf' : mood >= 40 ? 'Braucht Kaffee' : 'Kritisch: Kaffee!';
+  $('#cups').textContent = cupsData.n;
+}
+setInterval(() => { coffee = Math.max(0, coffee - 1); if (coffee < 30) mood = Math.max(10, mood - 1); drawStats(); }, 5000);
+$('#refill').onclick = () => { coffee = 100; mood = Math.min(100, mood + 5); cupsData.n++; store.set('georg-cups', cupsData); drawStats(); toast('☕ Kaffee nachgefüllt. Georg ist wieder voll da.'); };
+$('#highfive').onclick = () => { mood = Math.min(100, mood + 3); drawStats(); toast('✋ High Five! Georg grinst.'); };
+drawStats();
+
+const jumpInfo = {
+  profil: 'Steckbrief, Superkraft und Motto', skills: 'Interaktiver Fähigkeiten-Scan', galerie: 'Fotos ansehen und eigene hinzufügen',
+  zitate: 'Georgs beste Sprüche', timeline: 'Von Level 1 bis heute', quiz: 'Teste dein Georg-Wissen',
+  terminal: 'Befehle direkt an Georg', kontakt: 'Eine Nachricht verfassen'
+};
+$('#jumps').innerHTML = Object.entries(jumpInfo).map(([id, d]) =>
+  `<button class="hud jump" data-go="${id}"><span class="k">MODUL ${ids.indexOf(id) + 1}</span><h3>${labels[id]}</h3><p>${d}</p></button>`).join('');
+
+/* ---------- Skills ---------- */
+const SK = [
+  ['Humor', 95, 'Bringt jeden zum Lachen, notfalls mit dem gleichen Witz zum dritten Mal.'],
+  ['Kochen', 80, 'Der Kaiserschmarrn ist legendär. Bei allem anderen wird improvisiert.'],
+  ['Fußball', 72, 'Jeden Samstag auf dem Platz. Torjubel auf Profi-Niveau.'],
+  ['Zocken', 88, '„Nur noch eine Runde“ heißt bei Georg mindestens fünf.'],
+  ['Hilfe', 99, 'Umzug, Fahrradreifen, Liebeskummer: Georg ist sofort da.'],
+  ['Pünktlich', 41, 'Georg kommt. Irgendwann. Mit Kaffee in der Hand.']
+];
+const R = 105;
+const pt = (i, r) => { const a = -Math.PI / 2 + i * 2 * Math.PI / SK.length; return [Math.cos(a) * r, Math.sin(a) * r]; };
+const poly = r => SK.map((_, i) => pt(i, r).map(n => n.toFixed(1)).join(',')).join(' ');
+$('#radar').innerHTML = `<svg viewBox="-215 -150 430 300" role="img" aria-label="Netzdiagramm von Georgs Fähigkeiten">
+  ${[.25, .5, .75, 1].map(f => `<polygon class="ring" points="${poly(R * f)}"/>`).join('')}
+  ${SK.map((_, i) => { const [x, y] = pt(i, R); return `<line class="axis" x1="0" y1="0" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>`; }).join('')}
+  <polygon class="area" points="${SK.map((s, i) => pt(i, R * s[1] / 100).map(n => n.toFixed(1)).join(',')).join(' ')}"/>
+  ${SK.map((s, i) => { const [x, y] = pt(i, R * s[1] / 100); return `<circle class="dot" data-i="${i}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5"/>`; }).join('')}
+  ${SK.map((s, i) => { const [x, y] = pt(i, R + 16); const anchor = x > 5 ? 'start' : x < -5 ? 'end' : 'middle';
+      return `<text data-i="${i}" x="${x.toFixed(1)}" y="${(y + (y < -50 ? -2 : y > 50 ? 10 : 4)).toFixed(1)}" text-anchor="${anchor}">${s[0]} ${s[1]}</text>`; }).join('')}
+</svg>`;
+$('#skill-list').innerHTML = SK.map((s, i) =>
+  `<button class="skill" data-i="${i}" aria-pressed="false"><span class="n">${s[0]}</span><span class="p">${s[1]} / 100</span><span class="meter"><i style="width:${s[1]}%"></i></span></button>`).join('');
+function pickSkill(i) {
+  $$('.skill').forEach(b => b.setAttribute('aria-pressed', +b.dataset.i === i));
+  $$('#radar .dot, #radar text').forEach(el => el.classList.toggle('on', +el.dataset.i === i));
+  $$('#radar .dot').forEach(el => el.setAttribute('r', +el.dataset.i === i ? 8 : 5));
+  $('#skill-note').textContent = SK[i][2];
+}
+$$('.skill').forEach(b => { b.onclick = () => pickSkill(+b.dataset.i); b.onmouseenter = () => pickSkill(+b.dataset.i); });
+pickSkill(4);
+
+/* ---------- Galerie ---------- */
+const ART = [
+  { t: 'Gipfelsturm', c: 'Zugspitze · 2.962 m', g: 'linear-gradient(180deg,#0f2a4a 0%,#2b5f8a 45%,#ffb547 100%), #0f2a4a', s: 'polygon(0 100%,30% 45%,45% 60%,65% 25%,100% 100%)' },
+  { t: 'Kaiserschmarrn v3', c: 'Rezept streng geheim', g: 'radial-gradient(circle at 50% 55%,#ffd590 0 22%,#c9822e 23% 30%,#1a1410 31%)' },
+  { t: 'Derby-Sieg', c: 'Samstag, 90.+3 Minute', g: 'repeating-linear-gradient(90deg,#123b2a 0 40px,#164a34 40px 80px)' },
+  { t: 'LAN-Party', c: '03:47 Uhr · nur noch eine Runde', g: 'linear-gradient(135deg,#0b1020,#1d2a6e 50%,#7fe7ff)' },
+  { t: 'Sonnenaufgang', c: 'Georg war ausnahmsweise wach', g: 'radial-gradient(circle at 50% 80%,#fff2c7 0 8%,#ffb547 9% 22%,#ff7085 40%,#2a1640 75%)' },
+  { t: 'Geburtstag', c: 'Kerzen: zu viele zum Zählen', g: 'radial-gradient(circle at 20% 30%,#ff7085 0 6%,transparent 7%),radial-gradient(circle at 70% 20%,#7fe7ff 0 5%,transparent 6%),radial-gradient(circle at 60% 70%,#ffb547 0 7%,transparent 8%),radial-gradient(circle at 30% 75%,#6ff0a8 0 4%,transparent 5%),#1a1530' }
+];
+const artHTML = a => a.img ? `<img src="${a.img}" alt="${a.t}">` : `<div class="art" style="background:${a.g}">${a.s ? `<div style="position:absolute;inset:0;background:#0a1626;clip-path:${a.s}"></div>` : ''}</div>`;
+function drawGallery() {
+  $('#gallery').innerHTML = ART.map((a, i) =>
+    `<button class="tile" data-i="${i}" aria-label="${a.t} groß anzeigen">${artHTML(a)}<div class="cap"><b>${a.t}</b><span>${a.c}</span></div></button>`).join('') +
+    `<label class="upload"><input type="file" id="up" accept="image/*" multiple><div><b>+</b>Foto hinzufügen</div></label>`;
+  $$('.tile').forEach(b => b.onclick = () => openLb(+b.dataset.i));
+  $('#up').onchange = e => {
+    [...e.target.files].forEach(f => ART.push({ t: f.name.replace(/\.[^.]+$/, '').slice(0, 40).replace(/[<>"&]/g, ''), c: 'Eigenes Foto', img: URL.createObjectURL(f) }));
+    drawGallery(); toast('Foto hinzugefügt.');
   };
+}
+let lbI = 0;
+function openLb(i) {
+  lbI = (i + ART.length) % ART.length; const a = ART[lbI];
+  $('#lb-stage').innerHTML = artHTML(a); $('#lb-t').textContent = a.t; $('#lb-c').textContent = a.c;
+  if (!$('#lb').open) $('#lb').showModal();
+}
+$('#lb-prev').onclick = () => openLb(lbI - 1);
+$('#lb-next').onclick = () => openLb(lbI + 1);
+$('#lb-close').onclick = () => $('#lb').close();
+$('#lb').addEventListener('keydown', e => { if (e.key === 'ArrowLeft') openLb(lbI - 1); if (e.key === 'ArrowRight') openLb(lbI + 1); });
+$('#lb').addEventListener('click', e => { if (e.target === $('#lb')) $('#lb').close(); });
+drawGallery();
+
+/* ---------- Zitate ---------- */
+const QUOTES = [
+  ['Erst der Kaffee, dann die Welt.', 'jeden Morgen'],
+  ['Das kriegen wir schon hin.', 'immer'],
+  ['Ich war\'s nicht.', 'verdächtig oft'],
+  ['Fünf Minuten noch, dann bin ich da.', 'vor 40 Minuten'],
+  ['Kaiserschmarrn ist kein Dessert, das ist eine Lebenseinstellung.', 'in der Küche'],
+  ['Nur noch eine Runde.', 'um 3 Uhr nachts']
+];
+let qI = 0;
+function drawQuote() {
+  const [t, w] = QUOTES[qI];
+  $('#q-text').textContent = t; $('#q-who').textContent = '– Georg, ' + w;
+  $('#q-count').textContent = String(qI + 1).padStart(2, '0') + ' / ' + String(QUOTES.length).padStart(2, '0');
+}
+$('#q-prev').onclick = () => { qI = (qI - 1 + QUOTES.length) % QUOTES.length; drawQuote(); };
+$('#q-next').onclick = () => { qI = (qI + 1) % QUOTES.length; drawQuote(); };
+$('#q-rand').onclick = () => { let n; do n = Math.random() * QUOTES.length | 0; while (n === qI); qI = n; drawQuote(); };
+$('#q-copy').onclick = async () => toast(await copy(`„${QUOTES[qI][0]}“ – Georg`) ? 'Zitat kopiert.' : 'Kopieren geht hier nicht. Markiere den Text und kopiere ihn selbst.');
+drawQuote();
+
+/* ---------- Zeitstrahl ---------- */
+const TL = [
+  ['Level 1', 'Spawn', 'Georg erscheint auf der Welt. Erste Fähigkeit freigeschaltet: lautes Lachen.'],
+  ['Level 6', 'Schulstart', 'Klassenclown mit Herz. Die Lehrer erinnern sich bis heute.'],
+  ['Level 14', 'Erster Verein', 'Georg tritt dem Fußballverein bei und schießt im ersten Spiel ein Eigentor. Danach nur noch richtige.'],
+  ['Level 18', 'Führerschein', 'Freiheit auf vier Rädern. Pünktlicher wird er dadurch nicht.'],
+  ['Level 25', 'Große Reise', 'Die Reise, von der er heute noch bei jedem Grillabend erzählt.'],
+  ['Level 42', 'Heute', 'Georg, wie wir ihn kennen: Legende, Freund und Kaiserschmarrn-Meister.']
+];
+$('#tl').innerHTML = TL.map((e, i) => `<button class="node" data-i="${i}" aria-pressed="false"><i></i><span>${e[0]}</span><b>${e[1]}</b></button>`).join('');
+function pickTl(i) {
+  $$('.node').forEach(b => b.setAttribute('aria-pressed', +b.dataset.i === i));
+  $('#tl-detail').innerHTML = `<p class="eyebrow">${TL[i][0]}</p><h3>${TL[i][1]}</h3><p class="muted" style="margin:0;max-width:62ch">${TL[i][2]}</p>`;
+}
+$$('.node').forEach(b => b.onclick = () => pickTl(+b.dataset.i));
+pickTl(TL.length - 1);
+
+/* ---------- Quiz ---------- */
+const QZ = [
+  ['Was ist Georgs Spezialität in der Küche?', ['Lasagne', 'Kaiserschmarrn', 'Sushi', 'Toast Hawaii'], 1],
+  ['Wie viele Tassen Kaffee trinkt Georg am Tag?', ['Keine', 'Eine', 'Vier', 'Zwölf'], 2],
+  ['Welcher Skill ist Georgs schwächster?', ['Humor', 'Zocken', 'Kochen', 'Pünktlichkeit'], 3],
+  ['Was sagt Georg immer?', ['„Keine Zeit.“', '„Das kriegen wir schon hin.“', '„Mal schauen.“', '„Frag später.“'], 1],
+  ['Wie hoch war Georgs Gipfelsturm?', ['962 m', '1.962 m', '2.962 m', '8.848 m'], 2]
+];
+let qz = { i: 0, score: 0 };
+function drawQuiz() {
+  const box = $('#quiz-box');
+  if (qz.i >= QZ.length) {
+    const best = Math.max(store.get('georg-best', 0), qz.score); store.set('georg-best', best);
+    const rank = qz.score === 5 ? 'Bester Freund. Georg ist stolz auf dich.' : qz.score >= 3 ? 'Guter Kumpel. Da geht noch was.' : 'Neuling. Lies dich nochmal durch die Module.';
+    box.innerHTML = `<p class="eyebrow">Ergebnis</p><div class="big">${qz.score} / ${QZ.length}</div><h3>${rank}</h3>
+      <p class="muted mono" style="margin:0;font-size:13px">Deine Bestleistung: ${best} / ${QZ.length}</p>
+      <div class="row"><button class="btn primary" id="qz-again">Nochmal spielen</button></div>`;
+    $('#qz-again').onclick = () => { qz = { i: 0, score: 0 }; drawQuiz(); };
+    return;
+  }
+  const [q, opts, right] = QZ[qz.i];
+  box.innerHTML = `<div class="row" style="justify-content:space-between"><span class="eyebrow" style="margin:0">Frage ${qz.i + 1} von ${QZ.length}</span><span class="count">Punkte: ${qz.score}</span></div>
+    <div class="meter"><i style="width:${qz.i / QZ.length * 100}%"></i></div>
+    <h3 style="font-size:1.5rem">${q}</h3>
+    <div class="opts">${opts.map((o, j) => `<button class="opt" data-j="${j}">${o}</button>`).join('')}</div>
+    <div class="row" id="qz-after"></div>`;
+  $$('.opt', box).forEach(b => b.onclick = () => {
+    const j = +b.dataset.j;
+    if (j === right) qz.score++;
+    $$('.opt', box).forEach(o => { o.disabled = true; if (+o.dataset.j === right) o.classList.add('right'); else if (o === b) o.classList.add('wrong'); });
+    $('#qz-after').innerHTML = `<span class="mono" style="color:var(${j === right ? '--good' : '--bad'})">${j === right ? 'Richtig!' : 'Leider falsch.'}</span>
+      <button class="btn primary" id="qz-next">${qz.i === QZ.length - 1 ? 'Ergebnis zeigen' : 'Nächste Frage'}</button>`;
+    $('#qz-next').onclick = () => { qz.i++; drawQuiz(); };
+    $('#qz-next').focus();
+  });
+}
+drawQuiz();
+
+/* ---------- Terminal ---------- */
+const out = $('#term-out');
+function print(txt, cls) { const d = document.createElement('div'); d.textContent = txt; if (cls) d.className = cls; out.append(d); out.scrollTop = out.scrollHeight; }
+const JOKES = ['Warum trinkt Georg so viel Kaffee? Weil Tee keine Ausrede ist.', 'Georg kommt nie zu spät. Die anderen sind nur zu früh.', 'Georg hat mal einen Witz über Pünktlichkeit erzählt. Er kam zu spät.'];
+const CMDS = {
+  help: () => print('Befehle: whoami · status · kaffee · witz · zitat · gehe <modul> · datum · clear', 'c'),
+  whoami: () => print('Du bist ein geschätzter Gast auf GEORG//OS.'),
+  status: () => print(`Kaffeepegel ${coffee} % · Laune ${mood} % · Level 42`, 'a'),
+  kaffee: () => { $('#refill').click(); print('☕ Kaffee nachgefüllt. Pegel: 100 %', 'a'); },
+  witz: () => print(JOKES[Math.random() * JOKES.length | 0]),
+  zitat: () => { const q = QUOTES[Math.random() * QUOTES.length | 0]; print(`„${q[0]}“`, 'a'); },
+  datum: () => print(new Date().toLocaleString('de-DE', { dateStyle: 'full', timeStyle: 'short' })),
+  clear: () => out.textContent = '',
+  sudo: () => print('Zugriff verweigert. Nur Georg darf sudo.', 'e'),
+  gehe: a => { const id = ids.find(x => x === a || labels[x].toLowerCase() === a); if (id) { print('Öffne ' + labels[id] + ' …', 'c'); setTimeout(() => go(id), 300); } else print('Unbekanntes Modul. Probier: ' + ids.join(', '), 'e'); }
+};
+const hist = []; let hI = 0;
+function run(line) {
+  line = line.trim(); if (!line) return;
+  hist.push(line); hI = hist.length;
+  print('georg@os:~$ ' + line, 'muted');
+  const [c, ...rest] = line.toLowerCase().split(/\s+/);
+  (CMDS[c] || (() => print(`Befehl „${c}“ unbekannt. Tipp help.`, 'e')))(rest.join(' '));
+}
+$('#term-form').onsubmit = e => { e.preventDefault(); run($('#term-in').value); $('#term-in').value = ''; };
+$('#term-in').onkeydown = e => {
+  if (e.key === 'ArrowUp' && hI > 0) { e.preventDefault(); $('#term-in').value = hist[--hI]; }
+  if (e.key === 'ArrowDown') { e.preventDefault(); hI = Math.min(hist.length, hI + 1); $('#term-in').value = hist[hI] || ''; }
+};
+$('#term-tips').innerHTML = ['help', 'status', 'witz', 'zitat', 'kaffee', 'gehe quiz'].map(c => `<button class="btn" data-cmd="${c}">${c}</button>`).join('');
+$$('[data-cmd]').forEach(b => b.onclick = () => run(b.dataset.cmd));
+print('GEORG//OS v2.0 · Verbindung hergestellt.', 'c');
+print('Tipp help, um alle Befehle zu sehen.');
+
+/* ---------- Kontakt ---------- */
+function compose() {
+  const n = $('#m-name').value.trim() || 'Dein Name', t = $('#m-text').value.trim() || 'Hey Georg, …';
+  return `Betreff: ${$('#m-type').value}\n\nHallo Georg,\n\n${t}\n\nViele Grüße\n${n}`;
+}
+const drawPreview = () => $('#m-preview').textContent = compose();
+['m-name', 'm-type', 'm-text'].forEach(id => $('#' + id).addEventListener('input', drawPreview));
+$('#m-text').value = store.get('georg-draft', '');
+$('#m-text').addEventListener('input', () => store.set('georg-draft', $('#m-text').value));
+drawPreview();
+$('#msg-form').onsubmit = async e => {
+  e.preventDefault();
+  if (await copy(compose())) toast('Nachricht kopiert. Jetzt einfach bei WhatsApp oder in der E-Mail einfügen.');
+  else { const r = document.createRange(); r.selectNodeContents($('#m-preview')); getSelection().removeAllRanges(); getSelection().addRange(r); toast('Text ist markiert. Kopiere ihn mit Strg+C.'); }
+};
+
+/* ---------- Befehlspalette ---------- */
+const ACTIONS = [
+  ...ids.map(id => ({ l: labels[id], k: 'Modul', f: () => go(id) })),
+  { l: 'Kaffee nachfüllen', k: 'Aktion', f: () => $('#refill').click() },
+  { l: 'Zufälliges Zitat', k: 'Aktion', f: () => { go('zitate'); $('#q-rand').click(); } },
+  { l: 'Quiz neu starten', k: 'Aktion', f: () => { qz = { i: 0, score: 0 }; drawQuiz(); go('quiz'); } },
+  { l: 'Foto hinzufügen', k: 'Aktion', f: () => { go('galerie'); setTimeout(() => $('#up').click(), 50); } },
+  { l: 'Witz erzählen', k: 'Aktion', f: () => { go('terminal'); run('witz'); } }
+];
+let palItems = [], palI = 0;
+function drawPal() {
+  const q = $('#pal-in').value.toLowerCase();
+  palItems = ACTIONS.filter(a => a.l.toLowerCase().includes(q));
+  palI = Math.min(palI, Math.max(0, palItems.length - 1));
+  $('#pal-list').innerHTML = palItems.length ? palItems.map((a, i) => `<li><button class="${i === palI ? 'act' : ''}" data-i="${i}">${a.l}<span>${a.k}</span></button></li>`).join('')
+    : '<li class="muted" style="padding:10px 12px">Nichts gefunden. Probier „Quiz“ oder „Kaffee“.</li>';
+  $$('#pal-list button').forEach(b => b.onclick = () => runPal(+b.dataset.i));
+}
+function runPal(i) { const a = palItems[i]; if (!a) return; $('#pal').close(); a.f(); }
+function openPal() { if ($('#pal').open) return; $('#pal-in').value = ''; palI = 0; drawPal(); $('#pal').showModal(); $('#pal-in').focus(); }
+$('#pal-open').onclick = openPal;
+$('#pal-in').oninput = () => { palI = 0; drawPal(); };
+$('#pal-in').onkeydown = e => {
+  if (e.key === 'ArrowDown') { e.preventDefault(); palI = (palI + 1) % Math.max(1, palItems.length); drawPal(); }
+  if (e.key === 'ArrowUp') { e.preventDefault(); palI = (palI - 1 + palItems.length) % Math.max(1, palItems.length); drawPal(); }
+  if (e.key === 'Enter') { e.preventDefault(); runPal(palI); }
+};
+$('#pal').addEventListener('click', e => { if (e.target === $('#pal')) $('#pal').close(); });
+
+/* ---------- Sternenfeld ---------- */
+const cv = $('#bg'), cx = cv.getContext('2d');
+let W, H, P = [], mouse = { x: -999, y: -999 };
+function size() {
+  const d = Math.min(devicePixelRatio || 1, 2);
+  W = innerWidth; H = innerHeight;
+  cv.width = W * d; cv.height = H * d; cv.style.width = W + 'px'; cv.style.height = H + 'px';
+  cx.setTransform(d, 0, 0, d, 0, 0);
+  const n = Math.min(110, Math.round(W * H / 13000));
+  P = Array.from({ length: n }, () => ({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3, r: Math.random() * 1.4 + .4 }));
+  if (reduce) frame();
+}
+function frame() {
+  cx.clearRect(0, 0, W, H);
+  for (const p of P) {
+    if (!reduce) { p.x = (p.x + p.vx + W) % W; p.y = (p.y + p.vy + H) % H; }
+  }
+  for (let i = 0; i < P.length; i++) {
+    const a = P[i];
+    for (let j = i + 1; j < P.length; j++) {
+      const b = P[j], dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy;
+      if (d2 < 14400) { cx.strokeStyle = `rgba(127,231,255,${(1 - d2 / 14400) * .18})`; cx.beginPath(); cx.moveTo(a.x, a.y); cx.lineTo(b.x, b.y); cx.stroke(); }
+    }
+    const mx = a.x - mouse.x, my = a.y - mouse.y, m2 = mx * mx + my * my;
+    if (m2 < 25600) { cx.strokeStyle = `rgba(255,181,71,${(1 - m2 / 25600) * .45})`; cx.beginPath(); cx.moveTo(a.x, a.y); cx.lineTo(mouse.x, mouse.y); cx.stroke(); }
+    cx.fillStyle = 'rgba(200,240,255,.8)'; cx.beginPath(); cx.arc(a.x, a.y, a.r, 0, 7); cx.fill();
+  }
+  if (!reduce && !document.hidden) requestAnimationFrame(frame);
+}
+addEventListener('resize', size);
+addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+document.addEventListener('visibilitychange', () => { if (!document.hidden && !reduce) requestAnimationFrame(frame); });
+size(); if (!reduce) requestAnimationFrame(frame);
+
+show(location.hash.slice(1));
 </script>
-</body>
-</html>
