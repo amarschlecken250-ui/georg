@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Die Welt von Georg</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fbf7f0; --card: #ffffff; --text: #2a2420; --muted: #75695f;
+    --accent: #d9622b; --accent-soft: #f6dccd; --line: #eadfd3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1b1714; --card: #26201c; --text: #f3ebe2; --muted: #b3a597;
+      --accent: #f08a52; --accent-soft: #3d2a1f; --line: #3a302a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1b1714; --card: #26201c; --text: #f3ebe2; --muted: #b3a597;
+    --accent: #f08a52; --accent-soft: #3d2a1f; --line: #3a302a;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 Inter, system-ui, sans-serif; }
+  header { text-align: center; padding: 56px 16px 24px; }
+  .avatar { width: 112px; height: 112px; border-radius: 50%; margin: 0 auto 16px; display: grid; place-items: center;
+    font: 800 52px Fraunces, serif; color: #fff; background: linear-gradient(135deg, var(--accent), #e9a23b); }
+  h1, h2 { font-family: Fraunces, serif; margin: 0 0 8px; }
+  h1 { font-size: clamp(2.2rem, 7vw, 3.6rem); }
+  header p { color: var(--muted); margin: 0; }
+  nav { position: sticky; top: 0; z-index: 1; background: var(--bg); border-bottom: 1px solid var(--line); }
+  [role="tablist"] { display: flex; gap: 4px; max-width: 960px; margin: 0 auto; padding: 8px 16px; overflow-x: auto; }
+  [role="tab"] { flex: none; border: 0; background: none; color: var(--muted); font: 600 15px Inter, sans-serif;
+    padding: 10px 14px; border-radius: 999px; cursor: pointer; }
+  [role="tab"]:hover { color: var(--text); }
+  [role="tab"][aria-selected="true"] { background: var(--accent-soft); color: var(--accent); }
+  [role="tab"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  main { max-width: 960px; margin: 0 auto; padding: 32px 16px 64px; }
+  [role="tabpanel"] { animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } }
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: 20px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
+  .card .emoji { font-size: 2rem; }
+  .card h3 { margin: 8px 0 4px; }
+  .card p { margin: 0; color: var(--muted); }
+  .tile { aspect-ratio: 1; border-radius: 16px; display: grid; place-items: center; font-size: 3rem; }
+  blockquote { margin: 0; font: 600 1.25rem/1.4 Fraunces, serif; }
+  blockquote + p { margin: 8px 0 0; color: var(--muted); }
+  .timeline { list-style: none; padding: 0; margin: 20px 0 0; border-left: 3px solid var(--accent-soft); }
+  .timeline li { position: relative; padding: 0 0 24px 24px; }
+  .timeline li::before { content: ""; position: absolute; left: -9px; top: 6px; width: 15px; height: 15px; border-radius: 50%; background: var(--accent); }
+  .timeline b { color: var(--accent); }
+  form { display: grid; gap: 12px; max-width: 480px; margin-top: 20px; }
+  input, textarea { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); color: var(--text); font: inherit; }
+  button.primary { background: var(--accent); color: #fff; border: 0; border-radius: 12px; padding: 12px; font: 600 16px Inter, sans-serif; cursor: pointer; }
+  .theme { position: absolute; top: 16px; right: 16px; background: var(--card); border: 1px solid var(--line); color: var(--text);
+    border-radius: 999px; width: 40px; height: 40px; cursor: pointer; font-size: 18px; }
+  .lead { font-size: 1.125rem; max-width: 640px; }
+  footer { text-align: center; color: var(--muted); padding: 24px 16px; border-top: 1px solid var(--line); }
+</style>
+</head>
+<body>
+<button class="theme" id="theme" aria-label="Hell/Dunkel umschalten">🌓</button>
+
+<header>
+  <div class="avatar" aria-hidden="true">G</div>
+  <h1>Die Welt von Georg</h1>
+  <p>Legende. Freund. Einfach Georg.</p>
+</header>
+
+<nav>
+  <div role="tablist" aria-label="Bereiche">
+    <button role="tab" id="t-start" aria-controls="start">🏠 Start</button>
+    <button role="tab" id="t-ueber" aria-controls="ueber">🙋 Über Georg</button>
+    <button role="tab" id="t-hobbys" aria-controls="hobbys">🎯 Hobbys</button>
+    <button role="tab" id="t-galerie" aria-controls="galerie">🖼️ Galerie</button>
+    <button role="tab" id="t-zitate" aria-controls="zitate">💬 Zitate</button>
+    <button role="tab" id="t-zeit" aria-controls="zeit">📅 Zeitstrahl</button>
+    <button role="tab" id="t-fakten" aria-controls="fakten">🤓 Fun Facts</button>
+    <button role="tab" id="t-kontakt" aria-controls="kontakt">✉️ Kontakt</button>
+  </div>
+</nav>
+
+<main>
+  <section role="tabpanel" id="start" aria-labelledby="t-start">
+    <h2>Willkommen!</h2>
+    <p class="lead">Schön, dass du da bist. Diese Seite ist ganz Georg gewidmet – stöbere durch die Tabs und lerne ihn kennen.</p>
+    <div class="grid">
+      <div class="card"><div class="emoji">☕</div><h3>Kaffee-Level</h3><p>Immer bei 100 %.</p></div>
+      <div class="card"><div class="emoji">😄</div><h3>Gute Laune</h3><p>Ansteckend, garantiert.</p></div>
+      <div class="card"><div class="emoji">🚀</div><h3>Motto</h3><p>Geht nicht gibt's nicht.</p></div>
+    </div>
+  </section>
+
+  <section role="tabpanel" id="ueber" aria-labelledby="t-ueber" hidden>
+    <h2>Über Georg</h2>
+    <p class="lead">Georg ist jemand, den man einfach mögen muss: hilfsbereit, neugierig und immer für einen Spaß zu haben. Hier kannst du seine Geschichte erzählen – wo er herkommt, was ihn ausmacht und warum alle ihn kennen.</p>
+  </section>
+
+  <section role="tabpanel" id="hobbys" aria-labelledby="t-hobbys" hidden>
+    <h2>Hobbys</h2>
+    <div class="grid">
+      <div class="card"><div class="emoji">⚽</div><h3>Fußball</h3><p>Am Wochenende auf dem Platz.</p></div>
+      <div class="card"><div class="emoji">🍳</div><h3>Kochen</h3><p>Seine Spezialität: Kaiserschmarrn.</p></div>
+      <div class="card"><div class="emoji">🎮</div><h3>Zocken</h3><p>Nur noch eine Runde …</p></div>
+      <div class="card"><div class="emoji">🥾</div><h3>Wandern</h3><p>Hauptsache, oben gibt's eine Hütte.</p></div>
+    </div>
+  </section>
+
+  <section role="tabpanel" id="galerie" aria-labelledby="t-galerie" hidden>
+    <h2>Galerie</h2>
+    <p>Ersetze die Platzhalter durch Fotos von Georg (<code>&lt;img src="foto.jpg" alt="…"&gt;</code>).</p>
+    <div class="grid">
+      <div class="tile" style="background:#f6dccd">🏔️</div>
+      <div class="tile" style="background:#d8e8d4">🌳</div>
+      <div class="tile" style="background:#d4e2f0">🌊</div>
+      <div class="tile" style="background:#efe1f5">🎉</div>
+      <div class="tile" style="background:#f8edc9">🍕</div>
+      <div class="tile" style="background:#e3e3e3">📸</div>
+    </div>
+  </section>
+
+  <section role="tabpanel" id="zitate" aria-labelledby="t-zitate" hidden>
+    <h2>Zitate</h2>
+    <div class="grid">
+      <div class="card"><blockquote>„Erst der Kaffee, dann die Welt.“</blockquote><p>– Georg, jeden Morgen</p></div>
+      <div class="card"><blockquote>„Das kriegen wir schon hin.“</blockquote><p>– Georg, immer</p></div>
+      <div class="card"><blockquote>„Ich war's nicht.“</blockquote><p>– Georg, verdächtig oft</p></div>
+    </div>
+  </section>
+
+  <section role="tabpanel" id="zeit" aria-labelledby="t-zeit" hidden>
+    <h2>Zeitstrahl</h2>
+    <ul class="timeline">
+      <li><b>Der Anfang</b><br>Georg erblickt das Licht der Welt.</li>
+      <li><b>Schulzeit</b><br>Klassenclown mit Herz.</li>
+      <li><b>Großes Abenteuer</b><br>Die erste Reise, von der er heute noch erzählt.</li>
+      <li><b>Heute</b><br>Georg, wie wir ihn kennen und lieben.</li>
+    </ul>
+  </section>
+
+  <section role="tabpanel" id="fakten" aria-labelledby="t-fakten" hidden>
+    <h2>Fun Facts</h2>
+    <div class="card" style="margin-top:20px">
+      <p id="fact" style="font-size:1.25rem;color:var(--text)"></p>
+      <button class="primary" id="next-fact" style="margin-top:16px">Noch ein Fakt 🎲</button>
+    </div>
+  </section>
+
+  <section role="tabpanel" id="kontakt" aria-labelledby="t-kontakt" hidden>
+    <h2>Kontakt</h2>
+    <p>Sag Georg Hallo! Die Nachricht öffnet dein E-Mail-Programm.</p>
+    <form id="form">
+      <input name="name" placeholder="Dein Name" required aria-label="Dein Name">
+      <textarea name="msg" rows="4" placeholder="Deine Nachricht an Georg" required aria-label="Nachricht"></textarea>
+      <button class="primary">Abschicken</button>
+    </form>
+  </section>
+</main>
+
+<footer>Mit ❤️ für Georg gemacht</footer>
+
+<script>
+  const tabs = [...document.querySelectorAll('[role="tab"]')];
+  function show(tab) {
+    tabs.forEach(t => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', on);
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    });
+    history.replaceState(null, '', '#' + tab.getAttribute('aria-controls'));
+  }
+  tabs.forEach((t, i) => {
+    t.onclick = () => show(t);
+    t.onkeydown = e => {
+      const d = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+      if (d) { const n = tabs[(i + d + tabs.length) % tabs.length]; show(n); n.focus(); }
+    };
+  });
+  show(tabs.find(t => '#' + t.getAttribute('aria-controls') === location.hash) || tabs[0]);
+
+  const facts = [
+    'Georg kann in unter 10 Sekunden ein Butterbrot schmieren.',
+    'Georg hat noch nie einen Geburtstag vergessen.',
+    'Der Name Georg kommt aus dem Griechischen und bedeutet „Bauer“.',
+    'Georg behauptet, er sei ein Morgenmensch. Niemand glaubt ihm.',
+    'Georgs Lieblingszahl ist angeblich 7.'
+  ];
+  let f = 0;
+  const factEl = document.getElementById('fact');
+  factEl.textContent = facts[0];
+  document.getElementById('next-fact').onclick = () => factEl.textContent = facts[f = (f + 1) % facts.length];
+
+  document.getElementById('form').onsubmit = e => {
+    e.preventDefault();
+    const d = new FormData(e.target);
+    location.href = 'mailto:?subject=' + encodeURIComponent('Hallo Georg, von ' + d.get('name')) + '&body=' + encodeURIComponent(d.get('msg'));
+  };
+
+  document.getElementById('theme').onclick = () => {
+    const dark = document.documentElement.dataset.theme
+      ? document.documentElement.dataset.theme === 'dark'
+      : matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.dataset.theme = dark ? 'light' : 'dark';
+  };
+</script>
+</body>
+</html>
